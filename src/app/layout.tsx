@@ -50,7 +50,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="{allenoire.variable} {britiSans.variable}" >
+    <html lang="en" className="{allenoire.variable} {britiSans.variable}">
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+      </head>
       <body>
         {children}
       </body>

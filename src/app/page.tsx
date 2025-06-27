@@ -1,4 +1,5 @@
 import Image from "next/image";
+import SignIn from "./components/Signin";
 
 export default function Home() {
   return (
@@ -46,12 +47,12 @@ export default function Home() {
 
 
 
-<body className="flex items-center justify-center min-h-screen p-4 ">
+<div className="flex items-center justify-center min-h-screen p-4 ">
 
     <div className="p-6 md:p-10 max-w-4xl w-full flex flex-col space-y-6 ring-2 ring-gray rounded-xl  ">
 
         <div className="__className_ca0933  text-black text-5xl md:text-6xl lg:text-7xlf text-center   pb-4  " >
-            Worksuit
+            WorkSuit
         </div>
 
         <div className="flex flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0">
@@ -84,17 +85,18 @@ export default function Home() {
             Watch Demo
         </button>
     </a>
-    <a href="https://www.google.com/" target="_blank" className="w-full sm:w-auto">
-        <button className=" __className_faf8d7 w-full shadow-lg text-white bg-gray-800  py-3 px-6 rounded-lg text-lg hover:border-gray-600 transition  duration-300 ease-in-out hover:bg-gray-800 hover:scale-105
-        ">
-            Get Started
-        </button>
-    </a>
+    
+       {/* get started button  */}
+       <div  className="w-full sm:w-auto  __className_faf8d7  shadow-lg text-white bg-gray-800  py-3 px-6 rounded-lg text-lg hover:border-gray-600 transition  duration-300 ease-in-out hover:bg-gray-800 hover:scale-105">
+       <SignIn/>
+       </div>
+       
+       
 </div>
 
     </div>
 
-</body>
+</div>
 
   );
 }
