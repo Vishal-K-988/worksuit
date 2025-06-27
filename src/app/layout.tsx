@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import localFont from 'next/font/local';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -11,6 +12,32 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+const allenoire = localFont({
+  src: [
+  
+    {
+      path: '../app/../../public/fonts/Allenoire-regular.woff2', // Path relative to this file
+      weight: '400',
+      style: 'normal',
+    },
+     ],
+  variable: '--font-allenoire', 
+  display: 'swap', 
+});
+
+const britiSans = localFont({
+  src : [
+    {
+      path : '../app/../../public/fonts/BritiSans.woff2',
+      weight: '400',
+      style: 'normal',
+    }
+  ],
+  variable : '--font-britiSans',
+  display: 'swap'
+})
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -23,10 +50,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="en" className="{allenoire.variable} {britiSans.variable}" >
+      <body>
         {children}
       </body>
     </html>
