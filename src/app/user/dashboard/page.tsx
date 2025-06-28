@@ -21,7 +21,7 @@ export default async function Dashboard() {
     id="sidebar"
     className="flex-col p-2 m-2 sm:m-3 bg-black/70 shadow-sm shadow-gray-400/50 rounded-xl fixed will-change-transform z-50 
     max-h-[calc(88vh-24px)] overflow-y-auto hide-scrollbar 
-    transform -translate-x-60 transition-transform duration-300 ease-in-out 
+    transform -translate-x-full transition-transform duration-300 ease-in-out 
     top-1/2 -translate-y-1/2 left-1 sm:left-3 hover:translate-x-0"
   >
 
@@ -32,7 +32,7 @@ export default async function Dashboard() {
         <a href="/dashboard">
           <Image
             className="rounded-full w-12 sm:w-16"
-            src={session?.user?.image ?? "../../../public/favicon.ico"}
+            src={session?.user?.image ?? "/default_user.png"}
             alt="Waiting for Worksuit"
             width={40}
             height={10}
@@ -42,13 +42,17 @@ export default async function Dashboard() {
       </div>
 
       {/* username */}
-      <div className="__className_faf8d7 sm:w-auto pt-3 text-center text-xl sm:text-2xl">
+      <div className="__className_faf8d7 sm:w-auto pt-3 px-4 text-center text-xl sm:text-2xl">
         <p>{session?.user?.name}</p>
       </div>
     </div>
 
     {/* menu section */}
-    <div className="mt-2 border-t-4 border-gray-700/50 py-3 px-2">
+    <div className="mt-1  px-4">
+     <p className="border-t-3 border-gray-700/50 mt-1  py-2">
+
+    </p>
+
       {[
         { name: "Dashboard", href: "/dashboard", icon: "chart-pie" },
         { name: "Notifications", href: "/user/project", icon: "megaphone" },
@@ -77,7 +81,10 @@ export default async function Dashboard() {
     </div>
 
     {/* portal header */}
-    <div className="mt-1 border-t-4 border-gray-700/50 py-2 px-2">
+    <div className=" px-4">
+    <p className="border-t-3 border-gray-700/50 mt-1  py-2">
+
+    </p>
       <div className="flex justify-between items-center">
         <div className="__className_faf8d7 transition-all duration-300">
           <h2 className="text-xl sm:text-2xl">Portal</h2>
@@ -129,7 +136,7 @@ export default async function Dashboard() {
       ].map((client) => (
         <h1
           key={client}
-          className="pb-3 my-1 text-sm sm:text-md __className_faf8d7 mask-b-from-neutral-200/60 hover:mask-none flex items-center gap-4 truncate-25ch"
+          className="pb-3 my-1 px-4 text-sm sm:text-md __className_faf8d7 mask-b-from-neutral-200/60 hover:mask-none flex items-center gap-4 truncate-25ch"
         >
           <Image
             src="../../../Logo.svg"
