@@ -9,3 +9,6 @@
     - storing data of the user ! (remaining with Prisma)
     - redirecting to dashboard (done)
 
+
+# 28-06-2025
+1. Dashboard 

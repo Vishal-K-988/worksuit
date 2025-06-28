@@ -39,6 +39,19 @@ const britiSans = localFont({
 })
 
 
+const britiSans_clients  = localFont({
+  src : [
+    {
+      path : '../app/../../public/fonts/BritiSans.woff2',
+      weight: '300',
+      style: 'normal',
+    }
+  ],
+  variable : '--font-britiSans',
+  display: 'swap'
+})
+ 
+
 export const metadata: Metadata = {
   title: "workSuit — Professional Client Portals for Freelancers",
   description: "workSuit helps freelancers and consultants share deliverables, sign contracts, and get paid — all from one clean, branded link.",
@@ -91,7 +104,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="{allenoire.variable} {britiSans.variable}">
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
+    
+        <link rel="icon" className="dark:invert" href="/Logo.svg" sizes="any" />
     
       </head>
       <body>

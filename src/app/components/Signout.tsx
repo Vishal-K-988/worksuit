@@ -9,7 +9,7 @@ export function SignOut() {
               redirectTo : '/'
         })
       }}
-    >
+    > 
       <button type="submit">Sign Out</button>
     </form>
   )

@@ -47,9 +47,9 @@ export default function Home() {
 
 
 
-<div className="flex items-center justify-center min-h-screen p-4 ">
+<div className="flex items-center justify-center min-h-screen p-4 bg-white ">
 
-    <div className="p-6 md:p-10 max-w-4xl w-full flex flex-col space-y-6 ring-2 ring-gray rounded-xl  ">
+    <div className="p-6 md:p-10 max-w-4xl w-full flex flex-col space-y-6 ring-2 ring-black rounded-xl  ">
 
         <div className="__className_ca0933  text-black text-5xl md:text-6xl lg:text-7xlf text-center   pb-4  " >
             WorkSuit
