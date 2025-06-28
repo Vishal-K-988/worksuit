@@ -6,9 +6,12 @@
 5. Oauth using google 
     - Protected route (done)
     - Signout (done)
-    - storing data of the user ! (remaining with Prisma)
+    - storing data of the user ! (remaining with Prisma) (Still remaining )
     - redirecting to dashboard (done)
 
 
 # 28-06-2025
-1. Dashboard 
+1. Sidebar (Done)
+2. Hover to seen effect done
+2. Basic sidebar navigation links done 
+

@@ -19,7 +19,7 @@ export default async function Dashboard() {
   {/* sidebar */}
   <div
     id="sidebar"
-    className="flex-col p-2 m-2 sm:m-3 bg-black/70 shadow-sm shadow-gray-400/50 rounded-xl fixed will-change-transform z-50 
+    className="flex-col p-2 m-2 sm:m-3 bg-black/100 shadow-sm shadow-gray-400/50 rounded-xl fixed will-change-transform z-50 
     max-h-[calc(88vh-24px)] overflow-y-auto hide-scrollbar 
     transform -translate-x-full transition-transform duration-300 ease-in-out 
     top-1/2 -translate-y-1/2 left-1 sm:left-3 hover:translate-x-0"
