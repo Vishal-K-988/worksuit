@@ -33,7 +33,7 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 28ch; 
+  max-width: 26ch; 
 }
 
 
