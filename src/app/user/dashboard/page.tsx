@@ -1,3 +1,5 @@
+
+
 import { SignOut } from "../../components/Signout";
 import Image from "next/image";
 import {auth } from '@/../../auth'
@@ -11,6 +13,16 @@ export default async function Dashboard() {
         return
     }
 
+    // client portals array 
+    const clientPortals = ['Landing PAGE AND DESIGN '];
+
+
+      // create Portal 
+      function createPortal() {
+        <h1>
+          create 
+        </h1>
+      }
 
   return (
 <>
@@ -92,7 +104,9 @@ export default async function Dashboard() {
 
         <div className="flex items-center space-x-2">
           {/* search */}
-          <a href="/project" className="p-1">
+         <button>
+
+        
             <Image
               src="../../../search.svg"
               alt="search"
@@ -100,16 +114,20 @@ export default async function Dashboard() {
               width={20}
               height={20}
             />
-          </a>
+           </button>
           {/* add */}
           <div>
-            <Image
+            <button className="pt-1">
+              <Image
+              
               src="../../../plus.svg"
               alt="plus"
               className="dark:invert"
               width={23}
               height={20}
             />
+            </button>
+          
           </div>
         </div>
       </div>
@@ -117,23 +135,7 @@ export default async function Dashboard() {
 
     {/* portal projects list */}
     <div>
-      {[
-        "Landing Page and Design ",
-        "Inventory Management & Order Fulfillment System",
-        "Employee Performance & Task Management Dashboard",
-        "Subscription Box Management Application",
-        "client5",
-        "Project Alpha",
-        "Design Sprint",
-        "Client A",
-        "Service Beta",
-        "Product Gamma",
-        "Task Board",
-        "User Flow",
-        "Client B",
-        "Phase One",
-        "Dev Build",
-      ].map((client) => (
+      {clientPortals.map((client) => (
         <h1
           key={client}
           className="pb-3 my-1 px-4 text-sm sm:text-md __className_faf8d7 mask-b-from-neutral-200/60 hover:mask-none flex items-center gap-4 truncate-25ch"
