@@ -2,7 +2,6 @@ import { v } from "convex/values";
 import { internal } from "./_generated/api";
 import { mutation } from "./_generated/server";
 import { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, AWS_BUCKET_NAME } from "./s3Client";
-import File_Limit_Bytes from "./userLimit";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Client } from "./s3Client";
@@ -10,10 +9,7 @@ import { s3Client } from "./s3Client";
 
 // const userLimit ; 
 
-const getPreSignedUrlFunction = () => {
-    
-}
-
+// link  :https://chatgpt.com/share/687145e9-f524-8006-83a0-55680fbd221f
 
 export const getUploadUrl = mutation({
     args : {

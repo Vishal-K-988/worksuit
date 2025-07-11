@@ -14,8 +14,9 @@
   "dependencies": {
     "@auth/core": "^0.37.0",
     "@aws-sdk/client-s3": "^3.842.0",
-    "@aws-sdk/s3-request-presigner": "^3.842.0",
+    "@aws-sdk/s3-request-presigner": "^3.844.0",
     "@convex-dev/auth": "^0.0.81",
+    "@google/genai": "^1.9.0",
     "convex": "^1.23.0",
     "lucide-react": "^0.525.0",
     "nanoid": "^5.1.5",
