@@ -39,7 +39,7 @@ export default defineSchema({
   v.object({
     userID : v.string() , 
     filename : v.string() , 
-    size : v.number() , 
+    size : v.number(), 
     s3Key  : v.string(),
     uploadedAt : v.number()
   })
@@ -49,7 +49,11 @@ export default defineSchema({
   v.object({
     email : v.string(), 
     name : v.string(),
-    validity : v.number()
+    validity : v.number(),
+    validityInReadableForm : v.string(),
+    // tag : normal / special
+    tag : v.string() ,
+    plan: v.string()
 
   })
  )

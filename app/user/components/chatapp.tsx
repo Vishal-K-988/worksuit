@@ -1,10 +1,13 @@
 'use Client'
 import { api } from "@/convex/_generated/api"
 import { useMutation,  useQuery } from "convex/react"
-import { LetterText, Paperclip, SendHorizonal } from "lucide-react"
+import { LetterText,  SendHorizonal } from "lucide-react"
 import {  useEffect, useState } from "react"
 import React from "react"
   import { GoogleGenAI } from "@google/genai";
+  import { useRef } from "react"
+import { DropdownMenuDemo } from "./fileUpload"
+import { InputFile } from "@/components/ui/fileUpload"
 
 
 
@@ -20,9 +23,20 @@ export const ChatApp =  ({ slug}: ChatAppProps) => {
      const [Message, setMessage] = useState(""); // This is for USER INPUT
     const [GeminiResponse, setGeminiResponse] = useState(""); // This is for GEMINI'S STREAMED OUTPUT
     const [Loading, setLoading] = useState(false);
+       const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+    
     const sendMessage = useMutation(api.chatapp.sendMessage);
 
+    // getting all the details of the user ! 
+    const userDetails = useQuery(api.myFunctions.userPlansandQuota);
+    let strictlyTruncatedNumber : number = 0 ;
+
+    if (userDetails?.validity) {
+        const rawValue = userDetails?.totalUsedBytes / 1048576;;
+        strictlyTruncatedNumber = Math.floor(rawValue * 100) / 100;
+    }
+   
     if (!slug || slug === undefined) {
         return (
             <div className="flex justify-center items-center h-screen">
@@ -76,8 +90,10 @@ export const ChatApp =  ({ slug}: ChatAppProps) => {
 
 
     // file upload Logic 
-    async  function FileUpload () {
-    
+    async  function FileUpload (event: React.ChangeEvent<HTMLInputElement>) {
+            if (event.target.files && event.target.files.length > 0) {
+        setSelectedFile(event.target.files[0]);
+      }
     }
 
 
@@ -85,6 +101,8 @@ export const ChatApp =  ({ slug}: ChatAppProps) => {
 
     
     return(<>
+
+ 
     
     <div className="flex justify-center text-5xl font-serif">
                 <h1>
@@ -148,10 +166,11 @@ export const ChatApp =  ({ slug}: ChatAppProps) => {
                             <SendHorizonal className="border rounded-2xl px-2 my-2 items-center" width={50} height={45} />
                         </button>
 
-                        {/* Upload File Button */}
-                        <button className="rounded-3xl px-3 flex-shrink-0" onClick={FileUpload}>
-                             <Paperclip className="border rounded-2xl px-2 my-2 items-center" width={50} height={45}/>
-                        </button>
+                       
+                               
+                     
+
+                       
                     </div>
 
                     {/* Gemini Response Display Area */}
@@ -169,26 +188,42 @@ export const ChatApp =  ({ slug}: ChatAppProps) => {
                                 style={{ minHeight: '100px' }}
                             />
                         )}
-                    </div>
 
+                        <button onClick={() => {
+                            setMessage(GeminiResponse)
+                        }}>
+                            Use this 
+                        </button>
+                    </div>
+                        
+                        
                     
                 </div>
                    
-                   {/* user section  */}
-                {/* <div className=" border-2 border-amber-800  rounded-2xl px-3 py-2 ">
-                     <h2 className=" text-xl  flex justify-center ">
-                        Users  
-                     </h2>
-                     <p className="border-2 border-b-gray-700 px-2 mb-2 ">
+                   {/* File Upload Section  */}
+                   <div>
+                    <InputFile/>
+                    <br /><br /><br /><br /><br /><br /><br />
 
-                     </p>
-                     <h2 className=" text-xl ">
-                        Vishal 
-                     </h2>
-                        <h2 className=" text-xl ">
-                        Karthik  
-                     </h2>
-                </div> */}
+{/* reset of the code  */}
+                    {/* diplaying user quotas and all  */}
+                    
+                    {userDetails ?<div className="ring-2 ring-green-500 font-mono text-xl rounded-2xl px-6 py-5 mx-2">
+                        <h1> Plan : {userDetails?.Plan}</h1>
+                        <h1> Tag : {userDetails?.tag}</h1>
+                         <h1> Used Storage :{strictlyTruncatedNumber}MB</h1>
+                        <h1> Upload Limit Storage :  {userDetails?.Max_File_Upload_Limit / 1048576} MB</h1>
+                        <h1> Upload Limit Storage : {userDetails?.validity}</h1>
+
+
+                        
+                    </div> : <div></div> }
+
+
+
+                   </div>
+                        
+               
 
             </div>
 

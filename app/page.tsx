@@ -6,6 +6,7 @@ import { Authenticated, AuthLoading, Unauthenticated, useMutation, useQuery } fr
 import { api } from "@/convex/_generated/api";
 
 import Image from "next/image";
+import { ModeToggle } from "@/components/ui/dark-mode-toggle";
 
 
 
@@ -41,6 +42,8 @@ export default function Home() {
   // updating messages docs using 
   return (
     <>
+
+    
   {/* loader */}
     <AuthLoading>
 

@@ -1,5 +1,7 @@
-const File_Limit_MB = 100 ;
-const File_Limit_Bytes = File_Limit_MB * 1024 * 1024 ; 
+// in MB
+export const File_Upload_Limit = {
+    "Free" : 100, 
+    "Pro" : 500, 
+    "Premium" : 1000
+};
 
-
-export default File_Limit_Bytes;
