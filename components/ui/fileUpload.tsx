@@ -5,6 +5,8 @@ import { Button } from "./button";
 import { ChangeEvent, useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { redirect } from "next/navigation";
+
 
 export function InputFile() {
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
@@ -34,7 +36,7 @@ export function InputFile() {
       try {
         // Call the mutation function for each file to get its unique pre-signed URL
         // Make sure your Convex mutation 'UploadURL' returns an object like { url: string }
-        const UploadedURL  = await getUploadURLMutation({ // Destructure url from the response
+        const UploadedURL  = await getUploadURLMutation({ 
           filename: filename,
           filesize: filesize,
           filetype: filetype,
@@ -43,10 +45,10 @@ export function InputFile() {
         console.log(`Pre-signed URL for ${filename} is: `, UploadedURL);
 
         if (UploadedURL) {
-          // Upload the file using the pre-signed URL
+       
           const response = await fetch(UploadedURL, {
             method: "PUT",
-            body: file, // Use the current file from the loop
+            body: file, 
             headers: {
               "Content-Type": filetype,
             },
@@ -90,6 +92,14 @@ export function InputFile() {
           </ul>
         </div>
       )}
+
+      <div>
+        <Button className="ring-white ring-2" onClick={() => {
+      redirect("/pdf")
+      
+        }}>See the PDF</Button>
+      
+      </div>
     </div>
   );
 }

@@ -6,7 +6,9 @@ import { Authenticated, AuthLoading, Unauthenticated, useMutation, useQuery } fr
 import { api } from "@/convex/_generated/api";
 
 import Image from "next/image";
-import { ModeToggle } from "@/components/ui/dark-mode-toggle";
+import { Button } from "@/components/ui/button";
+import { redirect } from "next/navigation";
+
 
 
 
@@ -79,6 +81,7 @@ export default function Home() {
         <div>
            {/* to make the content at the center  */}
                 <div className="h-screen flex justify-center items-center  ">
+                  
           
                 {/*  image and login button  */}
                   <div className="flex flex-row justify-around items-center gap-60 ">
@@ -91,8 +94,18 @@ export default function Home() {
                      
           
                   </div>
+                  <br /><br />
+
+                  {/* Go to dashboard */}
+                   <div className="mx-4 my-2"> 
+                    <Button onClick={() =>{
+                      redirect("/user/dashboard")
+                    }}>Go to Dashboard</Button>
+                  </div>
+                 
                    
                 </div>
+                
         </div>
 
    

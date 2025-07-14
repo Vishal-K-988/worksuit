@@ -1,17 +1,18 @@
 import { v } from "convex/values";
-import { query, mutation, internalQuery, internalMutation } from "./_generated/server";
+import { query, mutation, internalQuery, internalMutation, action } from "./_generated/server";
 
 import { internal } from "./_generated/api";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Client } from "./s3Client";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { File_Upload_Limit } from "./userLimit";
 
 // Write your Convex functions in any file inside this directory (`convex`).
 // See https://docs.convex.dev/functions for more.
 
 // You can read data from the database via a query:
+
 
 
 
@@ -56,6 +57,11 @@ export const smartUserId = internalQuery({
     }
   }
 })
+
+
+
+
+
 
 
 export const user_plans = internalMutation({
@@ -338,7 +344,7 @@ export const UploadURL = mutation({
       }
 
         // Preparing command
-        const s3Key : string = `${userId}/${Date.now()}-${args.filename}`;
+        const s3Key : string = `${userId}/${args.filename}`;
 
         
         const command = new PutObjectCommand({
@@ -414,5 +420,55 @@ export const userPlansandQuota = query({
            
          
             return {Plan, tag, totalUsedBytes, Max_File_Upload_Limit, validity}
+  }
+})
+
+
+export const fetchS3Key = query({
+  handler :async (ctx) => {
+     const user = await ctx.runQuery(internal.myFunctions.smartUserId)
+        if (!user) {
+            return null;
+        }
+           const userId: string | null = user ? user._id : null;
+
+
+           const details   = await ctx.db.query("user_files").filter((q) => q.eq(q.field("userID"),userId)).order("desc").first()
+           const s3Key : string = details?.s3Key || "";
+
+       
+
+           return s3Key
+
+  }
+})
+
+export const ViewPDF = action ({
+  args  : {
+    s3Key : v.string()
+  }, 
+  handler : async (ctx, args) => {
+
+    try {
+      const command =  new GetObjectCommand({
+        Bucket : process.env.NEXT_PUBLIC_AWS_BUCKET_NAME,
+        Key : args.s3Key
+      })
+
+       // Generating the Pre-Signed URL and then returning it ! 
+        const viewURL = await getSignedUrl(s3Client , command , {
+            expiresIn : 300 
+        });
+
+        console.log("viewURL : " , viewURL);
+
+        return viewURL
+
+
+    }catch (error){
+      console.error("Error generating presigned URL:", error);
+      // throw new Error("Failed to generate presigned URL for PDF viewing.");
+    }
+
   }
 })

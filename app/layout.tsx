@@ -37,9 +37,7 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         > 
-        <header>
-          <ModeToggle/>
-        </header>
+       
       
            
            <ThemeProvider
@@ -48,6 +46,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+             <header>
+          <ModeToggle/>
+        </header>
              {children} 
              </ThemeProvider>
           
