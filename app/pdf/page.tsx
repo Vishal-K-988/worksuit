@@ -4,6 +4,8 @@ import { useAction, useQuery } from "convex/react"
 import { Pdfview } from "../user/components/pdfview"
 import { api } from "@/convex/_generated/api"
 import { useState } from "react"
+import SignPreview from "../user/components/signPreview"
+
 
 
 
@@ -47,6 +49,16 @@ export default  function PDF(){
         {URL}
             </p> 
     </h1>
-       <Pdfview URL= {URL}/>
+            <div className="flex justify-center  gap-12 px-9 py-8">   
+                {/* showing PDF */}
+                  <Pdfview URL= {URL}/>
+
+                {/* Signning pdf */}
+                    <div>
+                         <SignPreview/>
+                    </div>
+
+            </div>
+     
     </>)
 }
