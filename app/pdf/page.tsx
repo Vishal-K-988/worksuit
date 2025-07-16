@@ -44,14 +44,20 @@ export default  function PDF(){
 
     
     return (<>
-    <h1 className=" font-mono font-semibold ">
+   
+
+        {URL ?  <div className="px-6 py-4 mx-3 my-2"> 
+    <h1 className=" font-mono font-semibold  ">
         Content Id :  <p className="font-sm font-sans">
         {URL}
             </p> 
     </h1>
             <div className="flex justify-center  gap-12 px-9 py-8">   
                 {/* showing PDF */}
-                  <Pdfview URL= {URL}/>
+                {URL ?   <Pdfview URL= {URL}/> : <div className="flex justi h-screen items-center"> <h1>
+                    Loading Contract 
+                 </h1> </div>}
+                
 
                 {/* Signning pdf */}
                     <div>
@@ -59,6 +65,10 @@ export default  function PDF(){
                     </div>
 
             </div>
-     
+         </div> : <div className="flex justify-center h-screen items-center"> <h1>
+                    Loading Contract 
+                 </h1> </div> }
+
+
     </>)
 }
