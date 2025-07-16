@@ -47,6 +47,7 @@ const britiSans_clients  = localFont({
       style: 'normal',
     }
   ],
+  
   variable : '--font-britiSans',
   display: 'swap'
 })
