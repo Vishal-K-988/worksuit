@@ -54,9 +54,7 @@ export default  function PDF(){
     </h1>
             <div className="flex justify-center  gap-12 px-9 py-8">   
                 {/* showing PDF */}
-                {URL ?   <Pdfview URL= {URL}/> : <div className="flex justi h-screen items-center"> <h1>
-                    Loading Contract 
-                 </h1> </div>}
+               <Pdfview URL= {URL}/>
                 
 
                 {/* Signning pdf */}

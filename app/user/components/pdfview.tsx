@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react';
+import type { pdfjs as PDFJSType } from 'react-pdf';
 import dynamic from 'next/dynamic';
 
 // Dynamically import Document and Page components with ssr: false
@@ -31,7 +32,8 @@ export const Pdfview = (props: Props) => {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true); // State to manage loading
   const [error, setError] = useState<string | null>(null); // State to store error messages
-  const [pdfjsInstance, setPdfjsInstance] = useState<any>(null); // State to hold the pdfjs instance
+
+const [pdfjsInstance, setPdfjsInstance] = useState<typeof PDFJSType | null>(null);
 
   // Effect to dynamically import pdfjs and set workerSrc on the client side
   useEffect(() => {
@@ -60,7 +62,7 @@ export const Pdfview = (props: Props) => {
     setError(null); // Clear any previous errors
   }
 
-  function onDocumentError(err: any) {
+  function onDocumentError(err: Error) {
     console.error('Error loading PDF document:', err);
     // Provide a more user-friendly error message
     setError(`Failed to load PDF: ${err.message || 'Unknown error'}. Please ensure the PDF URL is correct and accessible.`);

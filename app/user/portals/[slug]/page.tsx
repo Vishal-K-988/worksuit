@@ -5,43 +5,35 @@ import { useQuery } from "convex/react";
 import React from "react";
 import { ChatApp } from "../../components/chatapp";
 
+type PageProps = {
+  params: {
+    slug: string;
+  };
+};
 
+const Slug = ({ params }: PageProps) => {
+  const { slug } = params;
 
-type Portalprops = {
-    params: {
-        slug: string
-    }
-}
-
-const Slug = ({ params: paramsPromise }: Portalprops) => {
-      const params = React.use(paramsPromise); 
-
-    // got the slug
-    const { slug } = params;
-
-    // this will return only 1 portal (or an array if your Convex query returns multiple)
-    // The 'data' will be 'undefined' initially while fetching.
+    
     const data = useQuery(api.portals.getSpecificPortal, {
         slug: slug
     });
 
     console.log("data : ", data);
 
-    // --- Add the loader logic here ---
+//    loader
     if (data === undefined) {
         return (
             <div className="flex justify-center items-center h-screen">
-                {/* You can use any loader component or simple text here */}
+              
                 <p>Loading portal data...</p>
-                {/* Example of a simple spinner (requires some CSS or a library like Tailwind's spin animation) */}
-                {/* <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div> */}
+              
             </div>
         );
     }
-    // --- End loader logic ---
+   
 
-    // Now 'data' is either an array (if multiple items match) or null/empty array if none.
-    // Ensure 'data' is treated as an array for the map function.
+   
     const portalItems = Array.isArray(data) ? data : (data ? [data] : []);
 
 
@@ -64,7 +56,7 @@ const Slug = ({ params: paramsPromise }: Portalprops) => {
                             </div>
                         ))
                     ) : (
-                        "No portal found with this slug." // Message if no data is found after loading
+                        "No portal found with this slug."
                     )}
                 </h1>
             </div>

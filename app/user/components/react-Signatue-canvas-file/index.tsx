@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 import SignaturePad from 'signature_pad'
 import trimCanvas from 'trim-canvas'
 
-
 export interface SignatureCanvasProps extends SignaturePad.SignaturePadOptions {
   canvasProps?: React.CanvasHTMLAttributes<HTMLCanvasElement>
   clearOnResize?: boolean
@@ -11,7 +10,6 @@ export interface SignatureCanvasProps extends SignaturePad.SignaturePadOptions {
 
 export class SignatureCanvas extends Component<SignatureCanvasProps> {
   static override propTypes = {
-    // signature_pad's props
     velocityFilterWeight: PropTypes.number,
     minWidth: PropTypes.number,
     maxWidth: PropTypes.number,
@@ -21,19 +19,18 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
     throttle: PropTypes.number,
     onEnd: PropTypes.func,
     onBegin: PropTypes.func,
-    // props specific to the React wrapper
     canvasProps: PropTypes.object,
-    clearOnResize: PropTypes.bool
+    clearOnResize: PropTypes.bool,
   }
 
   static defaultProps: Pick<SignatureCanvasProps, 'clearOnResize'> = {
-    clearOnResize: true
+    clearOnResize: true,
   }
 
-  static refNullError = new Error('react-signature-canvas is currently ' +
-    'mounting or unmounting: React refs are null during this phase.')
+  static refNullError = new Error(
+    'react-signature-canvas is currently mounting or unmounting: React refs are null during this phase.'
+  )
 
-  // shortcut reference (https://stackoverflow.com/a/29244254/3431180)
   private readonly staticThis = this.constructor as typeof SignatureCanvas
 
   _sigPad: SignaturePad | null = null
@@ -41,14 +38,13 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
 
   private readonly setRef = (ref: HTMLCanvasElement | null): void => {
     this._canvas = ref
-    // if component is unmounted, set internal references to null
     if (this._canvas === null) {
       this._sigPad = null
     }
   }
 
   _excludeOurProps = (): SignaturePad.SignaturePadOptions => {
-    const { canvasProps, clearOnResize, ...sigPadProps } = this.props
+    const {  ...sigPadProps } = this.props
     return sigPadProps
   }
 
@@ -63,12 +59,10 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
     this.off()
   }
 
-  // propagate prop updates to SignaturePad
   override componentDidUpdate: Component['componentDidUpdate'] = () => {
     Object.assign(this._sigPad, this._excludeOurProps())
   }
 
-  // return the canvas ref for operations like toDataURL
   getCanvas = (): HTMLCanvasElement => {
     if (this._canvas === null) {
       throw this.staticThis.refNullError
@@ -76,20 +70,15 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
     return this._canvas
   }
 
-  // return a trimmed copy of the canvas
   getTrimmedCanvas = (): HTMLCanvasElement => {
-    // copy the canvas
     const canvas = this.getCanvas()
     const copy = document.createElement('canvas')
     copy.width = canvas.width
     copy.height = canvas.height
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     copy.getContext('2d')!.drawImage(canvas, 0, 0)
-    // then trim it
     return trimCanvas(copy)
   }
 
-  // return the internal SignaturePad reference
   getSignaturePad = (): SignaturePad => {
     if (this._sigPad === null) {
       throw this.staticThis.refNullError
@@ -98,7 +87,7 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
   }
 
   _checkClearOnResize = (): void => {
-    if (!this.props.clearOnResize) { // eslint-disable-line @typescript-eslint/strict-boolean-expressions -- this is backward compatible with the previous behavior, where null was treated as falsey
+    if (!this.props.clearOnResize) {
       return
     }
     this._resizeCanvas()
@@ -107,15 +96,12 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
   _resizeCanvas = (): void => {
     const canvasProps = this.props.canvasProps ?? {}
     const { width, height } = canvasProps
-    // don't resize if the canvas has fixed width and height
+
     if (typeof width !== 'undefined' && typeof height !== 'undefined') {
       return
     }
 
     const canvas = this.getCanvas()
-    /* When zoomed out to less than 100%, for some very strange reason,
-      some browsers report devicePixelRatio as less than 1
-      and only part of the canvas is cleared then. */
     const ratio = Math.max(window.devicePixelRatio ?? 1, 1)
 
     if (typeof width === 'undefined') {
@@ -124,7 +110,7 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
     if (typeof height === 'undefined') {
       canvas.height = canvas.offsetHeight * ratio
     }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
     canvas.getContext('2d')!.scale(ratio, ratio)
     this.clear()
   }
@@ -134,8 +120,6 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
     return <canvas ref={this.setRef} {...canvasProps} />
   }
 
-  // all wrapper functions below render
-  //
   on: SignaturePad['on'] = () => {
     window.addEventListener('resize', this._checkClearOnResize)
     return this.getSignaturePad().on()

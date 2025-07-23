@@ -1,5 +1,4 @@
 'use client'
-
 import Image from "next/image";
 import { useState } from "react";
 import SignatureCanvas from "../components/react-Signatue-canvas-file/index";
@@ -41,7 +40,13 @@ console.log("URL : "  , URL)
 
   <div className="my-4 py-5">
      {URL
-        ? <img className="ring-2 rounded-xl px-2 py-2 ring-emerald-900" alt='signature' src={URL} />
+        ?<Image
+  className="ring-2 rounded-xl px-2 py-2 ring-emerald-900"
+  alt="signature"
+  src={URL}
+  width={400}       
+  unoptimized         // Optional: disables Next.js optimization (if needed for dynamic URLs like S3)
+/>
         : null}
   </div>
 

@@ -170,6 +170,7 @@ export const messages = query({
         return null
     }
     else {
+      console.log("from message query function !  ")
       return data
     }
   }

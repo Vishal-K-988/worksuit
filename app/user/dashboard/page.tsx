@@ -7,19 +7,33 @@ import { useMutation, useQuery } from "convex/react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { Forms } from "../components/forms";
 
+type Portals = {
+  title: string;
+  description: string;
+  freelancerId: string;
+  clientEmail: string;
+  sharedURLslug: string;
+  createdAt: number;
+};
+
+type PortalItem = Portals & {
+  _id: string;
+  _creationTime: number;
+};
 
 
 
 
 export default function Dashboard () {
+  const [PortalList, setPortalList] = useState<PortalItem[]>([]);
+  const data = useQuery(api.portals.getListofPortals);
 
-  const [PortalList , setPortalList] = useState<any[]>([]);
-  const data : any  =  useQuery(api.portals.getListofPortals);
 
 
   useEffect(() => {
     if (data) {
-      setPortalList(data);
+       const portals = Array.isArray(data) ? data : [data];
+  setPortalList(portals as PortalItem[]);
     }
   }, [data]);
   console.log("list of client POrtals : " , data )
@@ -48,7 +62,7 @@ export default function Dashboard () {
     console.log("result: ", result)
     const { storageId } = await result.json();
     console.log("storageID : " , storageId)
-    // Step 3: Save the newly allocated storage id to the database
+   
     await sendImage({ storageId, author: name });
 
     setSelectedImage(null);
@@ -59,10 +73,9 @@ export default function Dashboard () {
     if (data === undefined) {
         return (
             <div className="flex justify-center items-center h-screen  ">
-                {/* You can use any loader component or simple text here */}
+              
                 <p>Did you know? Every client portal in workSuit comes with real-time chat, file sharing, and e-signing — all in one link.</p>
-                {/* Example of a simple spinner (requires some CSS or a library like Tailwind's spin animation) */}
-                {/* <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div> */}
+               
             </div>
         );
     }
@@ -133,7 +146,7 @@ export default function Dashboard () {
                                        transform hover:scale-105 transition-transform duration-300 ease-in-out
                                        border border-gray-200"
                         >
-                          <a href={`http://localhost:3000/user/portals/${item.sharedURLslug}`}                                 target= {"_parent"}>                                              
+                          <a href={`/user/portals/${item.sharedURLslug}`}                                 target= {"_parent"}>                                              
                             <h3 className="text-xl font-semibold mb-2 text-blue-700">{item.title || "Untitled Portal"}</h3>
 
                           </a>

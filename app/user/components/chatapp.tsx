@@ -5,11 +5,17 @@ import { LetterText,  SendHorizonal } from "lucide-react"
 import {  useEffect, useState } from "react"
 import React from "react"
   import { GoogleGenAI } from "@google/genai";
-  import { useRef } from "react"
-import { DropdownMenuDemo } from "./fileUpload"
+
 import { InputFile } from "@/components/ui/fileUpload"
 
 
+type Message = {
+    _id : string, 
+    userName: string;
+  message: string;
+  _creationTime: number;
+
+}
 
 
     // console.log("Gemini api key:", process.env.NEXT_PUBLIC_GEMINI_API_KEY);
@@ -23,7 +29,7 @@ export const ChatApp =  ({ slug}: ChatAppProps) => {
      const [Message, setMessage] = useState(""); // This is for USER INPUT
     const [GeminiResponse, setGeminiResponse] = useState(""); // This is for GEMINI'S STREAMED OUTPUT
     const [Loading, setLoading] = useState(false);
-       const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    //    const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
     
     const sendMessage = useMutation(api.chatapp.sendMessage);
@@ -37,13 +43,13 @@ export const ChatApp =  ({ slug}: ChatAppProps) => {
         strictlyTruncatedNumber = Math.floor(rawValue * 100) / 100;
     }
    
-    if (!slug || slug === undefined) {
-        return (
-            <div className="flex justify-center items-center h-screen">
-                <p>Loading portal data...</p>
-            </div>
-        );
-    }
+    // if (!slug || slug === undefined) {
+    //     return (
+    //         <div className="flex justify-center items-center h-screen">
+    //             <p>Loading portal data...</p>
+    //         </div>
+    //     );
+    // }
 
     const getMessages = useQuery(api.chatapp.getMessages, {
         chatID: slug
@@ -90,11 +96,12 @@ export const ChatApp =  ({ slug}: ChatAppProps) => {
 
 
     // file upload Logic 
-    async  function FileUpload (event: React.ChangeEvent<HTMLInputElement>) {
-            if (event.target.files && event.target.files.length > 0) {
-        setSelectedFile(event.target.files[0]);
-      }
-    }
+    // async  function FileUpload (event: React.ChangeEvent<HTMLInputElement>) {
+    //         if (event.target.files && event.target.files.length > 0) {
+    //     setSelectedFile(event.target.files[0]);
+    //     console.log("selectedFile: " , selectedFile )
+    //   }
+    // }
 
 
  
@@ -102,6 +109,13 @@ export const ChatApp =  ({ slug}: ChatAppProps) => {
     
     return(<>
 
+ {!slug ? (
+      <div className="flex justify-center items-center h-screen">
+        <p>Loading portal data...</p>
+      </div>
+    ) : (
+      <div> {/* normal page UI */} </div>
+    )}
  
     
     <div className="flex justify-center text-5xl font-serif">
@@ -124,7 +138,7 @@ export const ChatApp =  ({ slug}: ChatAppProps) => {
                     {/* Display list of messages */}
                     <div className="px-2 m-1 h-96 overflow-y-auto">
                         {Array.isArray(getMessages) ? (
-                            [...getMessages].reverse().map((msg: any) => (
+                            [...getMessages].reverse().map((msg: Message) => (
                                 <div key={msg._id} className="mb-2 p-2 border rounded-lg bg-gray-100">
                                     <p className="font-semibold text-blue-800">{msg.userName}:</p>
                                     <p className="text-gray-700">{msg.message}</p>

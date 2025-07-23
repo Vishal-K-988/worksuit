@@ -1,6 +1,6 @@
 import { useAuthActions } from "@convex-dev/auth/react";
 import { GoogleLogo } from "@/components/Authentication/GoogleLogo";
-import Image from "next/image";
+
 
 
 export function SignInWithGoogle() {
