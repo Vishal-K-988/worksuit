@@ -6,13 +6,13 @@ import React from "react";
 import { ChatApp } from "../../components/chatapp";
 
 type PageProps = {
-  params: {
+  params: Promise <{
     slug: string;
-  };
+  } >
 };
 
 const Slug = ({ params }: PageProps) => {
-  const { slug } = params;
+  const { slug } = React.use(params);
 
     
     const data = useQuery(api.portals.getSpecificPortal, {
