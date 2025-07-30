@@ -74,9 +74,7 @@ const [pdfjsInstance, setPdfjsInstance] = useState<typeof PDFJSType | null>(null
 
   return (
     <div className="flex flex-col items-center p-4 min-h-screen bg-gray-100 font-inter">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6 rounded-md p-2 ">
-       Signed Contract 
-      </h1>
+      
 
       <div className="w-full max-w-4xl bg-white rounded-lg shadow-xl p-6 flex flex-col items-center">
         {isLoading && !error && (

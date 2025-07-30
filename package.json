@@ -27,11 +27,13 @@
     "nanoid": "^5.1.5",
     "next": "15.2.3",
     "next-themes": "^0.4.6",
+    "pdf-lib": "^1.17.1",
     "prop-types": "^15.8.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-pdf": "^10.0.1",
     "react-signature-canvas": "^1.1.0-alpha.2",
+    "signature_pad": "^5.0.10",
     "tailwind-merge": "^3.3.1",
     "trim-canvas": "^0.1.2"
   },
