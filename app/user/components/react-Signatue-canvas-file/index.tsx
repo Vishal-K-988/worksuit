@@ -9,7 +9,7 @@ interface SignaturePadOptions {
   minWidth?: number
   maxWidth?: number
   minDistance?: number
-  dotSize?: number | (() => number)
+  dotSize?: number
   penColor?: string
   throttle?: number
   onEnd?: () => void
@@ -59,8 +59,21 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
     }
   }
 
-  _excludeOurProps = (): any => {
-    const { canvasProps, clearOnResize, ...sigPadProps } = this.props
+  _excludeOurProps = (): SignaturePadOptions => {
+    // Create a new object with only the SignaturePad options
+    const sigPadProps: SignaturePadOptions = {}
+    
+    // Only copy the SignaturePad-specific props
+    if (this.props.velocityFilterWeight !== undefined) sigPadProps.velocityFilterWeight = this.props.velocityFilterWeight
+    if (this.props.minWidth !== undefined) sigPadProps.minWidth = this.props.minWidth
+    if (this.props.maxWidth !== undefined) sigPadProps.maxWidth = this.props.maxWidth
+    if (this.props.minDistance !== undefined) sigPadProps.minDistance = this.props.minDistance
+    if (this.props.dotSize !== undefined) sigPadProps.dotSize = this.props.dotSize
+    if (this.props.penColor !== undefined) sigPadProps.penColor = this.props.penColor
+    if (this.props.throttle !== undefined) sigPadProps.throttle = this.props.throttle
+    if (this.props.onEnd !== undefined) sigPadProps.onEnd = this.props.onEnd
+    if (this.props.onBegin !== undefined) sigPadProps.onBegin = this.props.onBegin
+    
     return sigPadProps
   }
 
@@ -97,7 +110,6 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
     const copy = document.createElement('canvas')
     copy.width = canvas.width
     copy.height = canvas.height
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     copy.getContext('2d')!.drawImage(canvas, 0, 0)
     // then trim it
     return trimCanvas(copy)
@@ -112,7 +124,7 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
   }
 
   _checkClearOnResize = (): void => {
-    if (!this.props.clearOnResize) { // eslint-disable-line @typescript-eslint/strict-boolean-expressions -- this is backward compatible with the previous behavior, where null was treated as falsey
+    if (!this.props.clearOnResize) {
       return
     }
     this._resizeCanvas()
@@ -138,7 +150,6 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
     if (typeof height === 'undefined') {
       canvas.height = canvas.offsetHeight * ratio
     }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     canvas.getContext('2d')!.scale(ratio, ratio)
     this.clear()
   }
@@ -172,7 +183,7 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
     return this.getSignaturePad().fromDataURL(dataURL, options)
   }
 
-  toDataURL = (type?: any, encoderOptions?: any): string => {
+  toDataURL = (type?: string, encoderOptions?: number): string => {
     return this.getSignaturePad().toDataURL(type, encoderOptions)
   }
 

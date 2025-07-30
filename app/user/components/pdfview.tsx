@@ -23,10 +23,22 @@ const options = {
 
 const maxWidth = 800;
 
+// Define proper types for the callback parameters
+interface PageClickParams {
+    clientX: number;
+    clientY: number;
+    pageNumber: number;
+    renderedPageWidth: number;
+    renderedPageHeight: number;
+    originalPdfPageWidth: number;
+    originalPdfPageHeight: number;
+    eventType: 'click' | 'mousemove';
+}
+
 interface PDFProps {
     pdfUrl: string;
-    onPageClick: (params: any) => void;
-    onPageMouseMove: (params: any) => void;
+    onPageClick: (params: PageClickParams) => void;
+    onPageMouseMove: (params: PageClickParams) => void;
     onPageMouseLeave: () => void;
     currentPageNumber: number;
     onDocumentLoadSuccess: (numPages: number) => void;
@@ -58,8 +70,10 @@ export const PDF = ({
     useEffect(() => {
         setIsClient(true);
         // Initialize pdfjs only on client side
-        const pdfjs = require('react-pdf').pdfjs;
-        pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+        import('react-pdf').then((mod) => {
+            const pdfjs = mod.pdfjs;
+            pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+        });
     }, []);
 
     const onDocumentSuccess = useCallback(({ numPages }: { numPages: number }) => {
@@ -70,12 +84,12 @@ export const PDF = ({
         }
     }, [onDocumentLoadSuccess]);
 
-    const onDocumentError = useCallback((error: any) => {
+    const onDocumentError = useCallback((error: Error) => {
         console.error('Error loading PDF document:', error);
         setIsLoading(false);
     }, []);
 
-    const onPageRenderSuccess = useCallback((page: any) => {
+    const onPageRenderSuccess = useCallback((page: { width: number; height: number }) => {
         const dimensions = { width: page.width, height: page.height };
         setOriginalPdfPageDimensions(dimensions);
         // Store the rendered dimensions as well
@@ -99,7 +113,7 @@ export const PDF = ({
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const getEventParams = useCallback((event: React.MouseEvent<HTMLDivElement, MouseEvent>, eventType: 'click' | 'mousemove') => {
+    const getEventParams = useCallback((event: React.MouseEvent<HTMLDivElement, MouseEvent>, eventType: 'click' | 'mousemove'): PageClickParams | null => {
         if (!originalPdfPageDimensions || !pageRef.current || !renderedPageDimensions) {
             return null;
         }
@@ -258,7 +272,16 @@ export const PDF = ({
                 {numPages && (
                     <div className="flex items-center justify-center mt-6 space-x-4">
                         <button
-                            onClick={() => onPageClick({ pageNumber: Math.max(1, currentPageNumber - 1) })}
+                            onClick={() => onPageClick({ 
+                                clientX: 0, 
+                                clientY: 0, 
+                                pageNumber: Math.max(1, currentPageNumber - 1),
+                                renderedPageWidth: 0,
+                                renderedPageHeight: 0,
+                                originalPdfPageWidth: 0,
+                                originalPdfPageHeight: 0,
+                                eventType: 'click'
+                            })}
                             disabled={currentPageNumber <= 1}
                             className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-md shadow-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition duration-300 ease-in-out"
                         >
@@ -268,7 +291,16 @@ export const PDF = ({
                             Page {currentPageNumber} of {numPages}
                         </span>
                         <button
-                            onClick={() => onPageClick({ pageNumber: Math.min(numPages, currentPageNumber + 1) })}
+                            onClick={() => onPageClick({ 
+                                clientX: 0, 
+                                clientY: 0, 
+                                pageNumber: Math.min(numPages, currentPageNumber + 1),
+                                renderedPageWidth: 0,
+                                renderedPageHeight: 0,
+                                originalPdfPageWidth: 0,
+                                originalPdfPageHeight: 0,
+                                eventType: 'click'
+                            })}
                             disabled={currentPageNumber >= numPages}
                             className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-md shadow-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition duration-300 ease-in-out"
                         >
