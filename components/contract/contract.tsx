@@ -21,7 +21,6 @@ export default function Contract() {
   const [loading, setLoading] = useState(false); // For signature application
   const [pdfLoading, setPdfLoading] = useState(true); // New state for PDF fetching
   const [currentPageNum, setCurrentPageNum] = useState(1);
-  const [totalPdfPages, setTotalPdfPages] = useState(1);
   const [objectUrl, setObjectUrl] = useState<string | null>(null);
   const [reactPdfDimensions, setReactPdfDimensions] = useState<{ width: number; height: number } | null>(null);
 
@@ -153,7 +152,8 @@ export default function Contract() {
   }, [currentPageNum, signatureDataUrl]);
 
   const handleDocumentLoadSuccess = useCallback((numPages: number) => {
-    setTotalPdfPages(numPages);
+    // We can remove this callback if not needed, or use numPages for other purposes
+    console.log(`PDF loaded with ${numPages} pages`);
   }, []);
 
   const handlePdfMouseLeave = useCallback(() => {

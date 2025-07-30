@@ -9,8 +9,15 @@ interface SignPreviewProps {
   onSignatureSave: (dataUrl: string | null) => void;
 }
 
+// Define the signature pad type
+interface SignaturePadInstance {
+  clear: () => void;
+  isEmpty: () => boolean;
+  getTrimmedCanvas: () => HTMLCanvasElement;
+}
+
 export default function SignPreview({ onSignatureSave }: SignPreviewProps) {
-  const [signaturePad, setSignaturePad] = useState<any>(null); 
+  const [signaturePad, setSignaturePad] = useState<SignaturePadInstance | null>(null); 
   const [savedSignatureUrl, setSavedSignatureUrl] = useState<string>(""); 
 
   
