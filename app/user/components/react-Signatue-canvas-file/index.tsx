@@ -1,36 +1,51 @@
-import PropTypes from 'prop-types'
+import Proptypes from "prop-types"
 import React, { Component } from 'react'
 import SignaturePad from 'signature_pad'
 import trimCanvas from 'trim-canvas'
 
-export interface SignatureCanvasProps extends SignaturePad.SignaturePadOptions {
+// Define the options interface that matches SignaturePad constructor
+interface SignaturePadOptions {
+  velocityFilterWeight?: number
+  minWidth?: number
+  maxWidth?: number
+  minDistance?: number
+  dotSize?: number | (() => number)
+  penColor?: string
+  throttle?: number
+  onEnd?: () => void
+  onBegin?: () => void
+}
+
+export interface SignatureCanvasProps extends SignaturePadOptions {
   canvasProps?: React.CanvasHTMLAttributes<HTMLCanvasElement>
   clearOnResize?: boolean
 }
 
 export class SignatureCanvas extends Component<SignatureCanvasProps> {
   static override propTypes = {
-    velocityFilterWeight: PropTypes.number,
-    minWidth: PropTypes.number,
-    maxWidth: PropTypes.number,
-    minDistance: PropTypes.number,
-    dotSize: PropTypes.oneOfType([PropTypes.number, PropTypes.func]),
-    penColor: PropTypes.string,
-    throttle: PropTypes.number,
-    onEnd: PropTypes.func,
-    onBegin: PropTypes.func,
-    canvasProps: PropTypes.object,
-    clearOnResize: PropTypes.bool,
+    // signature_pad's props
+    velocityFilterWeight: Proptypes.number,
+    minWidth: Proptypes.number,
+    maxWidth: Proptypes.number,
+    minDistance: Proptypes.number,
+    dotSize: Proptypes.oneOfType([Proptypes.number, Proptypes.func]),
+    penColor: Proptypes.string,
+    throttle: Proptypes.number,
+    onEnd: Proptypes.func,
+    onBegin: Proptypes.func,
+    // props specific to the React wrapper
+    canvasProps: Proptypes.object,
+    clearOnResize: Proptypes.bool
   }
 
   static defaultProps: Pick<SignatureCanvasProps, 'clearOnResize'> = {
-    clearOnResize: true,
+    clearOnResize: true
   }
 
-  static refNullError = new Error(
-    'react-signature-canvas is currently mounting or unmounting: React refs are null during this phase.'
-  )
+  static refNullError = new Error('react-signature-canvas is currently ' +
+    'mounting or unmounting: React refs are null during this phase.')
 
+  // shortcut reference (https://stackoverflow.com/a/29244254/3431180)
   private readonly staticThis = this.constructor as typeof SignatureCanvas
 
   _sigPad: SignaturePad | null = null
@@ -38,13 +53,14 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
 
   private readonly setRef = (ref: HTMLCanvasElement | null): void => {
     this._canvas = ref
+    // if component is unmounted, set internal references to null
     if (this._canvas === null) {
       this._sigPad = null
     }
   }
 
-  _excludeOurProps = (): SignaturePad.SignaturePadOptions => {
-    const {  ...sigPadProps } = this.props
+  _excludeOurProps = (): any => {
+    const { canvasProps, clearOnResize, ...sigPadProps } = this.props
     return sigPadProps
   }
 
@@ -59,10 +75,14 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
     this.off()
   }
 
+  // propagate prop updates to SignaturePad
   override componentDidUpdate: Component['componentDidUpdate'] = () => {
-    Object.assign(this._sigPad, this._excludeOurProps())
+    if (this._sigPad) {
+      Object.assign(this._sigPad, this._excludeOurProps())
+    }
   }
 
+  // return the canvas ref for operations like toDataURL
   getCanvas = (): HTMLCanvasElement => {
     if (this._canvas === null) {
       throw this.staticThis.refNullError
@@ -70,15 +90,20 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
     return this._canvas
   }
 
+  // return a trimmed copy of the canvas
   getTrimmedCanvas = (): HTMLCanvasElement => {
+    // copy the canvas
     const canvas = this.getCanvas()
     const copy = document.createElement('canvas')
     copy.width = canvas.width
     copy.height = canvas.height
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     copy.getContext('2d')!.drawImage(canvas, 0, 0)
+    // then trim it
     return trimCanvas(copy)
   }
 
+  // return the internal SignaturePad reference
   getSignaturePad = (): SignaturePad => {
     if (this._sigPad === null) {
       throw this.staticThis.refNullError
@@ -87,7 +112,7 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
   }
 
   _checkClearOnResize = (): void => {
-    if (!this.props.clearOnResize) {
+    if (!this.props.clearOnResize) { // eslint-disable-line @typescript-eslint/strict-boolean-expressions -- this is backward compatible with the previous behavior, where null was treated as falsey
       return
     }
     this._resizeCanvas()
@@ -96,12 +121,15 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
   _resizeCanvas = (): void => {
     const canvasProps = this.props.canvasProps ?? {}
     const { width, height } = canvasProps
-
+    // don't resize if the canvas has fixed width and height
     if (typeof width !== 'undefined' && typeof height !== 'undefined') {
       return
     }
 
     const canvas = this.getCanvas()
+    /* When zoomed out to less than 100%, for some very strange reason,
+      some browsers report devicePixelRatio as less than 1
+      and only part of the canvas is cleared then. */
     const ratio = Math.max(window.devicePixelRatio ?? 1, 1)
 
     if (typeof width === 'undefined') {
@@ -110,7 +138,7 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
     if (typeof height === 'undefined') {
       canvas.height = canvas.offsetHeight * ratio
     }
-
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     canvas.getContext('2d')!.scale(ratio, ratio)
     this.clear()
   }
@@ -120,6 +148,8 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
     return <canvas ref={this.setRef} {...canvasProps} />
   }
 
+  // all wrapper functions below render
+  //
   on: SignaturePad['on'] = () => {
     window.addEventListener('resize', this._checkClearOnResize)
     return this.getSignaturePad().on()
@@ -142,7 +172,7 @@ export class SignatureCanvas extends Component<SignatureCanvasProps> {
     return this.getSignaturePad().fromDataURL(dataURL, options)
   }
 
-  toDataURL: SignaturePad['toDataURL'] = (type, encoderOptions) => {
+  toDataURL = (type?: any, encoderOptions?: any): string => {
     return this.getSignaturePad().toDataURL(type, encoderOptions)
   }
 

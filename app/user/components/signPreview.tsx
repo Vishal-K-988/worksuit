@@ -1,55 +1,77 @@
 'use client'
+
 import Image from "next/image";
-import { useState } from "react";
-import SignatureCanvas from "../components/react-Signatue-canvas-file/index";
+import { useState, useCallback } from "react"; 
+import SignatureCanvas from  "../components/react-Signatue-canvas-file/index"
 
-export default function SignPreview() {
-const [Sign, setSign] = useState()
-const [URL, setURL] = useState("")
-
-
-function handleClear (){
-  Sign.clear();
+// Define props for SignPreview component
+interface SignPreviewProps {
+  onSignatureSave: (dataUrl: string | null) => void;
 }
 
-function handleSave (){
- setURL( Sign.getTrimmedCanvas().toDataURL ('image/png') )
-}
+export default function SignPreview({ onSignatureSave }: SignPreviewProps) {
+  const [signaturePad, setSignaturePad] = useState<any>(null); 
+  const [savedSignatureUrl, setSavedSignatureUrl] = useState<string>(""); 
 
-console.log("sign :", Sign)
-console.log("URL : "  , URL)
+  
+  const handleClear = useCallback(() => {
+    if (signaturePad) {
+      signaturePad.clear();
+      setSavedSignatureUrl(""); 
+      onSignatureSave(null);
+    }
+  }, [signaturePad, onSignatureSave]);
 
- return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center   gap-16 sm:p-20">
-     <h1 className="  font-serif text-4xl font-semibold ">
-      Decode this Captcha if not ROBOT!  
-     </h1>
-     <div className="border-2 ring-2 ring-emerald-500   ">
-      <SignatureCanvas penColor="white" backgroundColor="black" canvasProps={{width: 500, height: 200, className: 'sigCanvas'}}  ref={data => setSign(data)}  />
-     </div>
-     <div>
-      <div className="px-2 py-4 gap-6 flex ">
+  // Callback to save the signature
+  const handleSave = useCallback(() => {
+    if (signaturePad) {
+     
+      if (!signaturePad.isEmpty()) {
+        const dataUrl = signaturePad.getTrimmedCanvas().toDataURL('image/png');
+        setSavedSignatureUrl(dataUrl);
+        onSignatureSave(dataUrl); 
+      } else {
+        alert("Please draw your signature before saving.");
+      }
+    }
+  }, [signaturePad, onSignatureSave]);
 
-      
-      <button className="shadow-md ring-2  rounded-lg px-3 " onClick={handleClear}>Clear </button>
-      <button className="shadow-md ring-2  rounded-lg px-3 " onClick={handleSave}>Save </button>
+  return (
+    <div className="font-sans flex flex-col items-center gap-4 p-4 border border-gray-200 rounded-lg shadow-inner bg-gray-50">
+      <h2 className="text-xl font-semibold text-gray-700">Draw Your Signature</h2>
+      <div className="border-2 ring-2 ring-emerald-500 bg-black rounded-md overflow-hidden">
+        <SignatureCanvas
+          penColor="black"
+          canvasProps={{ 
+            width: 250, 
+            height: 150, 
+            className: 'sigCanvas',
+            style: { backgroundColor: 'white' }
+          }}
+          ref={data => setSignaturePad(data)}
+        />
+      </div>
+      <div className="flex gap-4 mt-2">
+        <button
+          className="px-5 py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition duration-300"
+          onClick={handleClear}
+        >
+          Clear
+        </button>
+        <button
+          className="px-5 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
+          onClick={handleSave}
+        >
+          Save Signature
+        </button>
       </div>
 
-      
-     </div>
-
-  <div className="my-4 py-5">
-     {URL
-        ?<Image
-  className="ring-2 rounded-xl px-2 py-2 ring-emerald-900"
-  alt="signature"
-  src={URL}
-  width={400}       
-  unoptimized         // Optional: disables Next.js optimization (if needed for dynamic URLs like S3)
-/>
-        : null}
-  </div>
-
+      {savedSignatureUrl && (
+        <div className="mt-4 text-center">
+          <h3 className="text-lg font-medium text-gray-700 mb-2">Saved Signature Preview:</h3>
+          <Image src={savedSignatureUrl} alt="Saved Signature" width={150} height={75} className="border border-gray-300 rounded mx-auto" />
+        </div>
+      )}
     </div>
   );
 }
